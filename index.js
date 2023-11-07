@@ -66,17 +66,40 @@ const onMovieSelect = async (movie, summaryElement, side) => {
 
         leftSideStats.forEach((leftStat, index) => {
             const rightStat = rightSideStats[index];
-            const leftSideValue = parseInt(leftStat.dataset.value);
-            const rightSideValue = parseInt(rightStat.dataset.value);
-
+            let leftSideValue = parseFloat(leftStat.dataset.value);
+            let rightSideValue = parseFloat(rightStat.dataset.value);
+            if (isNaN(leftSideValue)) leftSideValue = 0;
+            if (isNaN(rightSideValue)) rightSideValue = 0;
+            console.log(leftSideValue, rightSideValue);
             if (rightSideValue > leftSideValue) {
-                leftStat.classList.remove('is-primary');
-                leftStat.classList.add('is-warning');
-            } else {
-                rightStat.classList.remove('is-primary');
-                rightStat.classList.add('is-warning');
+                // RIGHT SIDE WINS
+                setStyles(rightStat, leftStat);
+            } else if (leftSideValue > rightSideValue) {
+                // LEFT SIDE WINS
+                setStyles(leftStat, rightStat);
+            } else if (rightSideValue === leftSideValue) {
+                // DRAW
+                setStyles(leftStat, rightStat, true);
             }
         });
+    };
+
+    const setStyles = (winner, loser, draw = false) => {
+        if (!draw) {
+            winner.classList.add('is-primary');
+            winner.classList.remove('is-warning');
+            winner.classList.remove('is-danger');
+            loser.classList.add('is-danger');
+            loser.classList.remove('is-primary');
+            loser.classList.remove('is-warning');
+        } else {
+            winner.classList.add('is-warning');
+            winner.classList.remove('is-primary');
+            winner.classList.remove('is-danger');
+            loser.classList.add('is-warning');
+            loser.classList.remove('is-primary');
+            loser.classList.remove('is-danger');
+        }
     };
 
     if (leftMovie && rightMovie) {
