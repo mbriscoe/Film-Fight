@@ -63,7 +63,12 @@ const onMovieSelect = async (movie, summaryElement, side) => {
     const runComparison = () => {
         const leftSideStats = document.querySelectorAll('#left-summary .notification');
         const rightSideStats = document.querySelectorAll('#right-summary .notification');
-
+        const summary = document.querySelector('#summary');
+        const summaryHeader = document.querySelector('#summaryHeader');
+        const summaryText = document.querySelector('#summaryText');
+        summary.classList.add('is-hidden');
+        let leftTotal = 0;
+        let rightTotal = 0;
         leftSideStats.forEach((leftStat, index) => {
             const rightStat = rightSideStats[index];
             let leftSideValue = parseFloat(leftStat.dataset.value);
@@ -73,15 +78,28 @@ const onMovieSelect = async (movie, summaryElement, side) => {
             console.log(leftSideValue, rightSideValue);
             if (rightSideValue > leftSideValue) {
                 // RIGHT SIDE WINS
+                rightTotal++;
                 setStyles(rightStat, leftStat);
             } else if (leftSideValue > rightSideValue) {
                 // LEFT SIDE WINS
+                leftTotal++;
                 setStyles(leftStat, rightStat);
             } else if (rightSideValue === leftSideValue) {
                 // DRAW
                 setStyles(leftStat, rightStat, true);
             }
+            console.log(leftTotal, rightTotal);
         });
+
+        summary.classList.remove('is-hidden');
+        summaryHeader.innerHTML = `${leftTotal} - ${rightTotal}`;
+        if (leftTotal > rightTotal) {
+            summaryText.innerHTML = `${leftMovie.Title} wins!`;
+        } else if (rightTotal > leftTotal) {
+            summaryText.innerHTML = `${rightMovie.Title} wins!`;
+        } else {
+            summaryText.innerHTML = "It's a draw!";
+        }
     };
 
     const setStyles = (winner, loser, draw = false) => {
