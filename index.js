@@ -24,19 +24,21 @@ const autoCompleteConfig = {
         return response.data.Search;
     },
 };
+
 createAutoComplete({
     ...autoCompleteConfig,
     root: document.querySelector('#left-autocomplete'),
     onOptionSelect(movie) {
-        document.querySelector('.tutorial').classList.add('is-hidden');
+        document.querySelector('.instruction').classList.add('is-hidden');
         onMovieSelect(movie, document.querySelector('#left-summary'), 'left');
     },
 });
+
 createAutoComplete({
     ...autoCompleteConfig,
     root: document.querySelector('#right-autocomplete'),
     onOptionSelect(movie) {
-        document.querySelector('.tutorial').classList.add('is-hidden');
+        document.querySelector('.instruction').classList.add('is-hidden');
         onMovieSelect(movie, document.querySelector('#right-summary'), 'right');
     },
 });
@@ -59,23 +61,26 @@ const onMovieSelect = async (movie, summaryElement, side) => {
     } else {
         rightMovie = response.data;
     }
-
+    // CHECK FOR WINNING SIDE
     const runComparison = () => {
         const leftSideStats = document.querySelectorAll('#left-summary .notification');
         const rightSideStats = document.querySelectorAll('#right-summary .notification');
         const summary = document.querySelector('#summary');
         const summaryHeader = document.querySelector('#summaryHeader');
         const summaryText = document.querySelector('#summaryText');
+        // hide summary
         summary.classList.add('is-hidden');
+
         let leftTotal = 0;
         let rightTotal = 0;
+
         leftSideStats.forEach((leftStat, index) => {
             const rightStat = rightSideStats[index];
             let leftSideValue = parseFloat(leftStat.dataset.value);
             let rightSideValue = parseFloat(rightStat.dataset.value);
             if (isNaN(leftSideValue)) leftSideValue = 0;
             if (isNaN(rightSideValue)) rightSideValue = 0;
-            console.log(leftSideValue, rightSideValue);
+
             if (rightSideValue > leftSideValue) {
                 // RIGHT SIDE WINS
                 rightTotal++;
@@ -88,7 +93,6 @@ const onMovieSelect = async (movie, summaryElement, side) => {
                 // DRAW
                 setStyles(leftStat, rightStat, true);
             }
-            console.log(leftTotal, rightTotal);
         });
 
         summary.classList.remove('is-hidden');
@@ -125,7 +129,8 @@ const onMovieSelect = async (movie, summaryElement, side) => {
     }
 };
 
-const movieTemplate = (movieDetail) => {
+// CREATE AND RETURN MOVIE TEMPLATE
+const movieTemplate = movieDetail => {
     const dollars = parseInt(movieDetail.BoxOffice.replace(/\$/g, '').replace(/,/g, ''));
     const metaScore = parseInt(movieDetail.Metascore);
     const imdbRating = parseFloat(movieDetail.imdbRating);
